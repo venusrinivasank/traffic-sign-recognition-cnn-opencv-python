@@ -1,5 +1,4 @@
 #libraries
-
 import numpy as np
 import matplotlib.pyplot as plt
 from keras.layers import Input
@@ -15,29 +14,20 @@ import os
 import pandas as pd
 import random
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-
+from sklearn.metrics import classification_report, confusion_matrix
+import seaborn as sns
 print('done')
 
 ################# Parameters #####################
 
-path = "C:/Users/ramachandran/Desktop/project/Train"  
-# Folder containing subfolders for each class (0 to 42)
-
-labelFile = 'C:/Users/ramachandran/Desktop/project/labels.csv'  
-# File with class names and mappings
-
-batch_size_val = 50  
-# how many to process together
-
+path = "C:/Users/ramachandran/Desktop/project/Train"  # Folder containing subfolders for each class (0 to 42)
+labelFile = 'C:/Users/ramachandran/Desktop/project/labels.csv'  # File with class names and mappings
+batch_size_val = 50  # how many to process together
 steps_per_epoch_val = 2000
 epochs_val = 30
 imageDimesions = (32, 32, 3)
-
-testRatio = 0.2    
-# 20% of the images for testing
-
-validationRatio = 0.2  
-# 20% of the remaining 80% for validation
+testRatio = 0.2    # 20% of the images for testing
+validationRatio = 0.2  # 20% of the remaining 80% for validation
 
 print('done')
 
@@ -46,33 +36,25 @@ count = 0
 images = []
 classNo = []
 myList = os.listdir(path)
-
 print("Total Classes Detected:", len(myList))
 noOfClasses = len(myList)
-
 print("Importing Classes.....")
-
 for x in range(0, len(myList)):
     myPicList = os.listdir(path + "/" + str(count))
     for y in myPicList:
-        curImg = cv2.imread(os.path.join(path, str(count), y))  
-	# Updated to ensure correct path usage        
-	curImg = cv2.resize(curImg, (32, 32))  
-	# Ensure all images are resized to 32x32
+        curImg = cv2.imread(os.path.join(path, str(count), y))  # Updated to ensure correct path usage
+        curImg = cv2.resize(curImg, (32, 32))  # Ensure all images are resized to 32x32
         images.append(curImg)
         classNo.append(count)
     print(count, end=" ")
     count += 1
-
 print(" ")
-
 images = np.array(images)
 classNo = np.array(classNo)
 
 print('done')
 
 ############################### Split Data
-
 X_train, X_test, y_train, y_test = train_test_split(images, classNo, test_size=testRatio)
 X_train, X_validation, y_train, y_validation = train_test_split(X_train, y_train, test_size=validationRatio)
 
@@ -85,7 +67,6 @@ validation_steps = len(X_test) // batch_size_val
 print('done')
 
 ############################### TO CHECK IF NUMBER OF IMAGES MATCHES TO NUMBER OF LABELS FOR EACH DATASET
-
 print("Data Shapes")
 print("Train", end=""); print(X_train.shape, y_train.shape)
 print("Validation", end=""); print(X_validation.shape, y_validation.shape)
@@ -94,7 +75,6 @@ print("Test", end=""); print(X_test.shape, y_test.shape)
 print('done')
 
 # Assertions to check the integrity of data
-
 assert(X_train.shape[0] == y_train.shape[0]), "The number of images does not match the number of labels in training set"
 assert(X_validation.shape[0] == y_validation.shape[0]), "The number of images does not match the number of labels in validation set"
 assert(X_test.shape[0] == y_test.shape[0]), "The number of images does not match the number of labels in test set"
@@ -105,21 +85,15 @@ assert(X_test.shape[1:] == imageDimesions), "The dimensions of the Test images a
 print('done')
 
 ############################### READ CSV FILE
-
 data = pd.read_csv(labelFile)
 print("Data shape ", data.shape, type(data))
 
 ############################### DISPLAY SOME SAMPLE IMAGES OF ALL THE CLASSES
-
 num_of_samples = []
 cols = 5
 num_classes = noOfClasses
-
-fig, axs = plt.subplots(nrows=num_classes, ncols=cols, figsize=(5, num_classes * 2))  
-# Adjust figsize based on num_classes
-
-fig.subplots_adjust(hspace=0.5, wspace=0.2)  
-# Adjust spacing between images
+fig, axs = plt.subplots(nrows=num_classes, ncols=cols, figsize=(5, num_classes * 2))  # Adjust figsize based on num_classes
+fig.subplots_adjust(hspace=0.5, wspace=0.2)  # Adjust spacing between images
 
 for i in range(cols):
     for j, row in data.iterrows():
@@ -130,13 +104,11 @@ for i in range(cols):
             axs[j][i].set_title(str(j) + "-" + row["Name"])
             num_of_samples.append(len(x_selected))
 
-plt.show() 
-# This will show the plot with adjusted spacing
+plt.show()  # This will show the plot with adjusted spacing
 
 print('done')
 
 ############################### DISPLAY A BAR CHART SHOWING NO OF SAMPLES FOR EACH CATEGORY
-
 print(num_of_samples)
 plt.figure(figsize=(12, 4))
 plt.bar(range(0, num_classes), num_of_samples)
@@ -146,7 +118,6 @@ plt.ylabel("Number of images")
 plt.show()
 
 ############################### PREPROCESSING THE IMAGES
-
 def grayscale(img):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     return img
@@ -164,7 +135,6 @@ def preprocessing(img):
 print('done')
 
 # Preprocess all images
-
 X_train = np.array(list(map(preprocessing, X_train)))
 X_validation = np.array(list(map(preprocessing, X_validation)))
 X_test = np.array(list(map(preprocessing, X_test)))
@@ -173,9 +143,7 @@ cv2.imshow("GrayScale Image Sample", X_train[random.randint(0, len(X_train) - 1)
 
 print('done')
 
-
 ############################### ADD A DEPTH OF 1
-
 X_train = X_train.reshape(X_train.shape[0], X_train.shape[1], X_train.shape[2], 1)
 X_validation = X_validation.reshape(X_validation.shape[0], X_validation.shape[1], X_validation.shape[2], 1)
 X_test = X_test.reshape(X_test.shape[0], X_test.shape[1], X_test.shape[2], 1)
@@ -183,16 +151,13 @@ X_test = X_test.reshape(X_test.shape[0], X_test.shape[1], X_test.shape[2], 1)
 print('done')
 
 ############################### IMAGE AUGMENTATION
-
 dataGen = ImageDataGenerator(width_shift_range=0.1, height_shift_range=0.1, zoom_range=0.2,
                              shear_range=0.1, rotation_range=10)
 dataGen.fit(X_train)
 batches = dataGen.flow(X_train, y_train, batch_size=20)
 X_batch, y_batch = next(batches)
 
-
 # Display augmented image samples
-
 fig, axs = plt.subplots(1, 15, figsize=(20, 5))
 fig.tight_layout()
 
@@ -241,7 +206,6 @@ def myModel():
 print('done')
 
 ############################### TRAINING THE MODEL
-
 model = myModel()
 
 # Print model summary
@@ -256,7 +220,6 @@ history = model.fit(dataGen.flow(X_train, y_train, batch_size=batch_size_val),
 print('Training done')
 
 ############################### PLOTTING TRAINING HISTORY
-
 plt.figure(1)
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
@@ -273,18 +236,15 @@ plt.xlabel('epoch')
 plt.show()
 
 ############################### EVALUATE THE MODEL
-
 score = model.evaluate(X_test, y_test, verbose=0)
 print('Test Score:', score[0])
 print('Test Accuracy:', score[1])
 
 ############################### SAVE THE MODEL
-
 model_path = 'trained_model.h5'
 model.save(model_path)
 
-############################### Final Training Accuracy and Loss
-
+# Final Training Accuracy and Loss
 training_loss = history.history['loss'][-1]
 training_accuracy = history.history['accuracy'][-1]
 validation_loss = history.history['val_loss'][-1]
@@ -297,11 +257,9 @@ print(f"Final Validation Accuracy: {validation_accuracy:.4f}")
 
 # Testing on random images from Test folder
 # Load and preprocess random images from the "Test" folder
-
 import matplotlib.pyplot as plt
 
 # ClassId to Traffic Sign Name Mapping
-
 class_names = {
     0: 'Speed limit (20km/h)', 1: 'Speed limit (30km/h)', 2: 'Speed limit (50km/h)',
     3: 'Speed limit (60km/h)', 4: 'Speed limit (70km/h)', 5: 'Speed limit (80km/h)',
@@ -318,12 +276,10 @@ class_names = {
 }
 
 # Load and preprocess random images from the "Test" folder
-
 test_image_folder = "C:/Users/ramachandran/Desktop/project/Test"  # Update the folder path accordingly
 random_images = random.sample(os.listdir(test_image_folder), 5)  # Pick 5 random images
 
 # Set up the figure for displaying images and their predictions
-
 fig, axs = plt.subplots(1, len(random_images), figsize=(20, 5))
 
 for i, img_name in enumerate(random_images):
@@ -348,6 +304,7 @@ for i, img_name in enumerate(random_images):
 
 plt.show()
 
+
 #Performance Metrices
 
 # Predict on the test set
@@ -356,15 +313,12 @@ y_pred_classes = np.argmax(y_pred, axis=1)
 y_true = np.argmax(y_test, axis=1)
 
 # Classification report
-
 print("Classification Report:\n", classification_report(y_true, y_pred_classes))
 
 # Confusion matrix
-
 conf_matrix = confusion_matrix(y_true, y_pred_classes)
 
 # Plot confusion matrix
-
 plt.figure(figsize=(10, 7))
 sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues')
 plt.title('Confusion Matrix')
@@ -373,6 +327,5 @@ plt.ylabel('True Class')
 plt.show()
 
 # Overall accuracy
-
 accuracy = np.sum(y_pred_classes == y_true) / len(y_true)
 print(f"Overall Test Accuracy: {accuracy * 100:.2f}%")
