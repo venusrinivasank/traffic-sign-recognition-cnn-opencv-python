@@ -1,0 +1,14 @@
+📦 traffic-sign-recognition-cnn-python
+ ┣ 📂 Meta
+ ┣ 📂 Train
+ ┣ 📂 Test
+ ┣ 📓 camera.ipynb
+ ┣ 📜 camera.txt
+ ┣ 📊 labels.csv
+ ┣ 📊 Meta.csv
+ ┣ 📓 model.ipynb
+ ┣ 📜 model.txt
+ ┣ 📊 Test.csv
+ ┣ 📊 Train.csv
+ ┣ 💻 trained_model.h5
+ ┣ 📜 requirements.txt
