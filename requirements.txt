@@ -1,0 +1,9 @@
+```txt
+numpy
+opencv-python
+matplotlib
+pandas
+seaborn
+scikit-learn
+tensorflow
+keras
