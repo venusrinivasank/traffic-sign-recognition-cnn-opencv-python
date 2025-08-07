@@ -35,6 +35,7 @@ pip install numpy pandas opencv-python matplotlib seaborn scikit-learn tensorflo
 
 - The training images are organized into 43 subfolders (0–42), each representing a traffic sign class.
 - Label mappings are stored in labels.csv.
+- dataset link
 
 ```download link:
     https://www.kaggle.com/datasets/meowmeowmeowmeowmeow/gtsrb-german-traffic-sign
