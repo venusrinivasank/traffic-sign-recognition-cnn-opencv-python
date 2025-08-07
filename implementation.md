@@ -1,5 +1,5 @@
 ### 🧪 Step-by-Step Project Setup
-✅ Step 1: Install Required Libraries
+✅ Step 1: Install Required Libraries<br>
 📥 Install libraries like TensorFlow, Keras, OpenCV, etc.
 
 ```bash
@@ -10,7 +10,7 @@ pip install -r requirements.txt
 📚 Load necessary packages in your Model.ipynb.
 
 ### ✅ Step 3: Load and Preprocess Dataset
-📂 Load images from the Train and Test folders.
+📂 Load images from the Train and Test folders.<br>
 📊 Normalize, grayscale, equalize, and reshape images.
 
 ### ✅ Step 4: Define CNN Model
